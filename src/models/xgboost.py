@@ -1,6 +1,8 @@
 from models.model_ import Model_
 import xgboost as xgb
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import make_scorer, recall_score
+
 
 
 class XGBoost(Model_):
@@ -32,6 +34,8 @@ class XGBoost(Model_):
             eval_metric="logloss",  # Set a common evaluation metric
         )
 
-        # Perform cross-validation and return the mean score
-        scores = cross_val_score(model, X, y, cv=3)
+       # Use recall as the scoring metric
+        recall_scorer = make_scorer(recall_score, average="weighted")
+        scores = cross_val_score(model, X, y, cv=5, scoring=recall_scorer)
+
         return scores.mean()

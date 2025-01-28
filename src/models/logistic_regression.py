@@ -1,6 +1,7 @@
 from models.model_ import Model_
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
+from sklearn.metrics import make_scorer, recall_score
 
 
 class Logistic_Regression_(Model_):
@@ -33,6 +34,9 @@ class Logistic_Regression_(Model_):
         # 4️⃣ Tworzenie modelu z dokładnie tymi samymi parametrami co w param_grid
         model = LogisticRegression(C=C, penalty=penalty, solver=solver, max_iter=500)
 
-        # 5️⃣ Walidacja krzyżowa (5-fold)
-        score = cross_val_score(model, X, y, cv=5, scoring="accuracy").mean()
-        return score
+        # Use recall as the scoring metric
+        recall_scorer = make_scorer(recall_score, average="weighted")
+        scores = cross_val_score(model, X, y, cv=5, scoring=recall_scorer)
+
+        return scores.mean()
+

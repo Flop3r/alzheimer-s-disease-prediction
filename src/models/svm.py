@@ -19,5 +19,9 @@ class SVM(Model_):
         coef0 = trial.suggest_float("coef0", 0.0, 1.0)  # Only for poly and sigmoid
 
         model = SVC(C=C, gamma=gamma, kernel=kernel, degree=degree, coef0=coef0)
-        scores = cross_val_score(model, X, y, cv=3)
+
+        # Use recall as the scoring metric
+        recall_scorer = make_scorer(recall_score, average="weighted")
+        scores = cross_val_score(model, X, y, cv=5, scoring=recall_scorer)
+        
         return scores.mean()
